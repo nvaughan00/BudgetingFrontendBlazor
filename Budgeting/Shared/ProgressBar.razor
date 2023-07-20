@@ -1,0 +1,25 @@
+﻿<div style="width: @Width;">
+    <h4 style="text-align:center">@Title</h4>
+    <div class="ProgressBarOuter" style="width:@Width; height:@Height">
+        <div class="ProgressBarInner" style="width:@InitialValue">
+            <p class="ProgressBarText">@DisplayString</p>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public string? Title { get; set; }
+
+    [Parameter]
+    public string? InitialValue { get; set; }
+
+    [Parameter]
+    public string? Width { get; set; }
+
+    [Parameter]
+    public string? Height { get; set; }
+
+    [Parameter]
+    public string? DisplayString { get; set; }
+}

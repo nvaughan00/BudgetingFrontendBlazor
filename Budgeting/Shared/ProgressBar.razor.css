@@ -1,0 +1,22 @@
+﻿.ProgressBarInner {
+    position: relative;
+    margin: 0;
+    background-color: darkslategrey;
+    border-radius: 3px;
+    border: black solid 1px;
+    height: 100%;
+    transition: width ease 2s;
+}
+
+.ProgressBarOuter {
+    border: black solid 1px;
+    border-radius: 5px;
+    background-color: dimgrey;
+}
+
+.ProgressBarText {
+    text-align: center;
+    color: burlywood;
+    font-size: 18px;
+    margin-top: 5px;
+}
