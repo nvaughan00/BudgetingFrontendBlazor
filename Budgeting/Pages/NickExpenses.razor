@@ -1,4 +1,6 @@
 ﻿@page "/nickcost"
+@using Newtonsoft.Json
+@inject HttpClient Http
 
 <PageTitle>Nick's Costs</PageTitle>
 <br /><br />
@@ -17,6 +19,8 @@
             <li style="border-top:dashed black 1px">@DisplayList[i].s &#8611 $@DisplayList[i].d</li>
         }    }
 </ul>
+
+<p>!@testItem.Description!</p>
 
 @code {
     public static double UtilityCost = 150.00;
@@ -51,8 +55,23 @@
         new Index.KVPair("Savings", SavingsCost)
     };
 
-    protected override void OnInitialized()
+    public ExpenseItem testItem = new ExpenseItem();
+
+    public class ExpenseItem
+    {
+        public string Description { get; set; } = string.Empty;
+        public decimal Amount { get; set; }
+        public int Id { get; set; }
+    }
+
+    protected async override void OnInitialized()
     {
         DisplayList = DisplayList.OrderByDescending(x => x.d).ToList();
+        var result = await Http.GetStringAsync("http://ec2-18-117-185-201.us-east-2.compute.amazonaws.com:8080/");
+
+        testItem.Description = result;
+
+        Console.WriteLine("this is result: " + result);
+        StateHasChanged();
     }
 }
