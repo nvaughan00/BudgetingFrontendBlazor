@@ -3,28 +3,31 @@
 <PageTitle>Index</PageTitle>
 
 <br /><br />
-<ProgressBar Title="Overall" Height="40px" Width=" " InitialValue="@TotalNet" DisplayString="@DisplayGross"></ProgressBar>
+<ProgressBar Title="Overall" Height="40px" Width=" " InitialValue="1" DisplayStringPercent="2"></ProgressBar>
 
 
 @code {
-    public static double NickMonthlyIncome = 4758.38;
-    public static double LilianMonthlyIncome = 3066.00;
+    public static decimal NickMonthlyIncome = 4758.38M;
+    public static decimal LilianMonthlyIncome = 3066.00M;
 
-    public static double TotalMonthlyIncome = Math.Round(NickMonthlyIncome + LilianMonthlyIncome, 2);
-    public static double TotalExpenses = Math.Round(NickExpenses.AllCosts.Sum() + LilianExpenses.AllCosts.Sum(), 2);
+    public static decimal TotalMonthlyIncome = Math.Round(NickMonthlyIncome + LilianMonthlyIncome, 2);
+    //public static decimal TotalExpenses = Math.Round(NickExpenses.AllCosts.Sum() + LilianExpenses.AllCosts.Sum(), 2);
 
-    public static string TotalNet = Math.Round((TotalExpenses / TotalMonthlyIncome) * 100, 2) + "%";
-    public static string DisplayGross = $"${TotalExpenses}/${TotalMonthlyIncome} --> {Math.Round((TotalExpenses / TotalMonthlyIncome) * 100, 2)}%";
+   // public static string TotalNet = Math.Round((TotalExpenses / TotalMonthlyIncome) * 100, 2) + "%";
+   // public static string DisplayGross = $"${TotalExpenses}/${TotalMonthlyIncome} --> {Math.Round((TotalExpenses / TotalMonthlyIncome) * 100, 2)}%";
 
-    public class KVPair
+    public class ExpenseItem
     {
-        public string s { get; set; }
-        public double d { get; set; }
+        public string Description { get; set; } = string.Empty;
+        public decimal Amount { get; set; }
+        public int Id { get; set; }
+    }
 
-        public KVPair(string s, double d)
-        {
-            this.s = s;
-            this.d = d;
-        }
+    public class ExpenseItemVariable
+    {
+        public int Id { get; set; }
+        public DateTime TransactionDate { get; set; }
+        public decimal Amount { get; set; }
+        public string Description { get; set; } = string.Empty;
     }
 }

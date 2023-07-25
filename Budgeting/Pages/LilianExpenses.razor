@@ -3,22 +3,12 @@
 <PageTitle>Lilian's Costs</PageTitle>
 <br />
 <br />
-<ProgressBar Title="Total Expenses" Height="40px" Width="400" InitialValue="@GrossRemaining" DisplayString="@DisplayGross"></ProgressBar>
+<ProgressBar Title="Total Expenses" Height="40px" Width="400" InitialValue="1" DisplayString="1"></ProgressBar>
 <br />
 <br />
 <h4 style="text-align: center">Breakdown</h4>
 <ul style="border: groove black 2px;">
-    @for (var i = 0; i < DisplayList.Count; i++)
-    {
-        if (i == 0)
-        {
-            <li>@DisplayList[i].s &#8611 $@DisplayList[i].d</li>
-        }
-        else
-        {
-            <li style="border-top:dashed black 1px">@DisplayList[i].s &#8611 $@DisplayList[i].d</li>
-        }
-    }
+
 </ul>
 
 @code {
@@ -35,33 +25,16 @@
     public static double AmazonCost = 9.99;
     public static double AppleMusicCost = 5.99;
     public static double PuzzleAppCost = 5.99;
-    public static double InvestmentCost = Index.NickMonthlyIncome * 0.15;
-    public static double SavingsCost = Index.NickMonthlyIncome * 0.10;
+   // public static double InvestmentCost = Index.NickMonthlyIncome * 0.15;
+   // public static double SavingsCost = Index.NickMonthlyIncome * 0.10;
 
     public static List<double> AllCosts = new List<double> { PersonalLoanCost, RentCost, InsuranceCost, RentersCost, MiscCost, StudentLoanCost, FederalLoanCost, ParkingSpotCost, HairCost, GroceryCost, AmazonCost, AppleMusicCost, PuzzleAppCost };
 
-    public static string GrossRemaining = Math.Round(((AllCosts.Sum() / Index.LilianMonthlyIncome) * 100), 2) + "%";
-    public static string DisplayGross = $"${Math.Round(AllCosts.Sum(), 2)}/${Math.Round(Index.LilianMonthlyIncome, 2)} --> {GrossRemaining}";
-
-    public static List<Index.KVPair> DisplayList = new List<Index.KVPair>
-    {
-        new Index.KVPair("PersonalLoan", PersonalLoanCost),
-        new Index.KVPair("Rent", RentCost),
-        new Index.KVPair("Insurance", InsuranceCost),
-        new Index.KVPair("Renters", RentersCost),
-        new Index.KVPair("Misc", MiscCost),
-        new Index.KVPair("StudentLoan", StudentLoanCost),
-        new Index.KVPair("FederalLoan", FederalLoanCost),
-        new Index.KVPair("ParkingSpot", ParkingSpotCost),
-        new Index.KVPair("Hair", HairCost),
-        new Index.KVPair("Grocery", GroceryCost),
-        new Index.KVPair("AmazonPrime", AmazonCost),
-        new Index.KVPair("AppleMusic", AppleMusicCost),
-        new Index.KVPair("PuzzleApp", PuzzleAppCost)
-    };
+   // public static string GrossRemaining = Math.Round(((AllCosts.Sum() / Index.LilianMonthlyIncome) * 100), 2) + "%";
+    //public static string DisplayGross = $"${Math.Round(AllCosts.Sum(), 2)}/${Math.Round(Index.LilianMonthlyIncome, 2)} --> {GrossRemaining}";
 
     protected override void OnInitialized()
     {
-        DisplayList = DisplayList.OrderByDescending(x => x.d).ToList();
+       // DisplayList = DisplayList.OrderByDescending(x => x.d).ToList();
     }
 }
