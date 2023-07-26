@@ -1,0 +1,25 @@
+﻿@page "/addexpense"
+
+@inject HttpClient Http
+
+@using ExpenseItemVariable = Index.ExpenseItemVariable
+@using Newtonsoft.Json
+@using System.Text
+
+<PageTitle>Add Expense</PageTitle>
+<br /><br />
+
+<h1>Placeholder</h1>
+<input type="button" value="Add Item" @onclick="AddExpenseItem"/>
+
+@code {
+
+    private async Task AddExpenseItem() {
+
+        var expenseItem = new ExpenseItemVariable { Amount = 10.00M, Description = "A Test Item", TransactionDate = DateTime.Now };
+
+        var content = new StringContent(JsonConvert.SerializeObject(expenseItem), Encoding.UTF8, "application/json");
+
+        var response = await Http.PostAsync("http://ec2-18-117-185-201.us-east-2.compute.amazonaws.com:8080/nick/addexpense", content);
+    }
+}
