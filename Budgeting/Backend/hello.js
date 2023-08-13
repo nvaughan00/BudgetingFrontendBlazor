@@ -84,6 +84,41 @@ app.post('/nick/addexpense', (req, res) => {
     });
 });
 
+//Get all variable expenses for Lilian
+app.get('/lilian/:year-:month', (req, res) => {
+    const start = `${req.params.year}-${req.params.month}-01 00:00:00`;
+    const end = `${req.params.year}-${req.params.month}-${monthRanges[req.params.month - 1]} 23:59:59`;
+    const query = `SELECT * FROM LILIAN_EXPENSES_VARIABLE WHERE TransactionDate BETWEEN '${start}' AND '${end}'`;
+
+    connection.query(query, function (err, result, fields) {
+        if (err) {
+            throw err;
+        }
+        else {
+            res.send(result);
+        }
+    });
+});
+
+app.post('/lilian/addexpense', (req, res) => {
+
+    const value = req.body.Amount;
+    const description = req.body.Description;
+    const date = req.body.TransactionDate;
+    const query = `INSERT INTO LILIAN_EXPENSES_VARIABLE(TransactionDate, Amount, Description) VALUES('${date}', ${value}, '${description}')`;
+
+    console.log(query);
+
+    connection.query(query, function (err) {
+        if (err) {
+            throw err;
+        }
+        else {
+            res.ok;
+        }
+    });
+});
+
 //PORT ENVIRONMENT VARIABLE
 const port = process.env.PORT || 8080;
 

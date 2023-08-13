@@ -1,0 +1,53 @@
+﻿.InputExpense {
+    width: 40%;
+    height: 40px;
+    text-align: center;
+}
+
+.InputButton {
+    width: 15%;
+    height: 40px;
+    text-align: center;
+}
+
+.OuterBox {
+    width: 100%;
+    border: black solid 2px;
+    display: flex;
+    justify-content: space-evenly;
+    height: 600px;
+}
+
+.InnerBox {
+    width: 44%;
+    max-height: 95%;
+    overflow-y: hidden;
+}
+
+.InnerHeader {
+    text-align: center;
+    text-decoration: underline;
+}
+
+.InnerList {
+    border: black groove 2px;
+    text-align: center;
+    list-style-type: none;
+    overflow: scroll;
+    max-height: 93%;
+}
+
+.InnerListItem {
+    border-top: dashed black 1px;
+    font-size: 18px;
+    position: relative;
+    right: 2%;
+}
+
+.InnerListItemFirst {
+    font-size: 18px;
+}
+
+::-webkit-scrollbar {
+    display: none;
+}

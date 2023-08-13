@@ -1,53 +1,81 @@
 ﻿@page "/nickcost"
+
 @using Newtonsoft.Json
 @using ExpenseItem = Index.ExpenseItem
 @using ExpenseItemVariable = Index.ExpenseItemVariable
+@using System.Text
+
 @inject HttpClient Http
 
 <PageTitle>Nick's Costs</PageTitle>
-<br /><br />
+
+
+<br />
+<br />
+<div style="display: flex; width: 70%; justify-content: space-evenly; margin: auto">
+    <input type="text" placeholder="Item Value" class="InputExpense" @bind="@ExpenseItemInputValue" />
+    <input type="text" placeholder="Item Description" class="InputExpense" @bind="@ExpenseItemInputDescription" />
+    <input type="button" value="Submit" class="InputButton" @onclick="AddExpenseItem"/>
+</div>
+<br />
+
+<br />
 <ProgressBar Title="Income Used This Month" Height="40px" Width="400" InitialValue="@GrossRemaining" DisplayStringFraction="@DisplayGrossFraction" DisplayStringPercent="@GrossRemaining"></ProgressBar>
-<br /><br />
-<h4 style="text-align: center">Breakdown</h4>
-<ul style="border: groove black 2px;">
-    @for(var i = 0; i < StaticExpenses.Count; i++)
-    {
-        if(i == 0)
-        {
-            <li>@StaticExpenses[i].Description &#8611 $@StaticExpenses[i].Amount</li>
-        }
-        else
-        {
-            <li style="border-top:dashed black 1px">@StaticExpenses[i].Description &#8611 $@StaticExpenses[i].Amount</li>
-        }    
-    }
-</ul>
+<br />
+<br />
+
+<div class="OuterBox">
+    <div class="InnerBox">
+        <h4 class="InnerHeader">Static Expenses</h4>
+        <ul class="InnerList">
+            @for (var i = 0; i < StaticExpenses.Count; i++)
+            {
+                if (i == 0)
+                {
+                    <li class="InnerListItemFirst">@StaticExpenses[i].Description &#8611 $@StaticExpenses[i].Amount</li>
+                }
+                else
+                {
+                    <li class="InnerListItem">@StaticExpenses[i].Description &#8611 $@StaticExpenses[i].Amount</li>
+                }
+            }
+        </ul>
+    </div>
+    <div class="InnerBox">
+        <h4 class="InnerHeader">Variable Expenses</h4>
+        <ul class="InnerList">
+            @for(var i = 0; i < VariableExpenses.Count; i++)
+            {
+                if(i == 0)
+                {
+                    <li class ="InnerListItemFirst">@VariableExpenses[i].Description &#8611 $@VariableExpenses[i].Amount</li>
+                }
+                else
+                {
+                    <li class="InnerListItem">@VariableExpenses[i].Description &#8611 $@VariableExpenses[i].Amount</li>
+                }    
+            }
+        </ul>
+    </div>
+</div>
 
 @code {
-    public static double UtilityCost = 150.00;
-    public static double RentCost = 833.50;
-    public static double CarPaymentCost = 460.73;
-    public static double MuayThaiCost = 250.00;
-    public static double GroceryCost = 400.00;
-    public static double InsuranceCost = 180.83;
-    public static double YoutubeCost = 30.00;
-    public static double CrunchyrollCost = 9.99;
-    public static double ParkingSpotCost = 65.00;
-    public decimal InvestmentCost = Math.Round(Index.NickMonthlyIncome * 0.15M, 2);
-    public decimal SavingsCost = Math.Round(Index.NickMonthlyIncome * 0.10M, 2);
-
     public string GrossRemaining = string.Empty;
     public string DisplayGrossFraction = string.Empty;
 
+    public decimal ExpenseItemInputValue;
+    public string ExpenseItemInputDescription = string.Empty;
+
     public List<ExpenseItem> StaticExpenses = new List<ExpenseItem>();
+    public List<ExpenseItemVariable> VariableExpenses = new List<ExpenseItemVariable>();
 
     protected async override void OnInitialized()
     {
         StaticExpenses = await GetStaticExpenseItems();
-        GrossRemaining = Math.Round(((StaticExpenses.Select(x => x.Amount).Sum() / Index.NickMonthlyIncome) * 100), 2) + "%";
-        DisplayGrossFraction = $"${Math.Round(StaticExpenses.Select(x => x.Amount).Sum(), 2)}/${Math.Round(Index.NickMonthlyIncome, 2)}";
+        VariableExpenses = await GetVariableExpenseItems();
+        StaticExpenses = StaticExpenses.OrderByDescending(x => x.Amount).ToList();
 
-        StateHasChanged();
+        UpdateTotalExpensesBar();
     }
 
     private async Task<List<ExpenseItem>> GetStaticExpenseItems()
@@ -78,5 +106,43 @@
         }
 
         return items;
+    }
+
+    private async Task AddExpenseItem()
+    {
+        UpdateVariableExpenseList();
+        UpdateTotalExpensesBar();
+
+        var expenseItem = new ExpenseItemVariable { Amount = ExpenseItemInputValue, Description = ExpenseItemInputDescription, TransactionDate = DateTime.Now };
+
+        var content = new StringContent(JsonConvert.SerializeObject(expenseItem), Encoding.UTF8, "application/json");
+
+        var response = await Http.PostAsync("http://ec2-18-117-185-201.us-east-2.compute.amazonaws.com:8080/nick/addexpense", content);
+
+        ExpenseItemInputValue = 0;
+        ExpenseItemInputDescription = string.Empty;
+    }
+
+    private void UpdateVariableExpenseList()
+    {
+        var newItem = new ExpenseItemVariable
+        {
+            Amount = ExpenseItemInputValue,
+            Description = ExpenseItemInputDescription,
+            TransactionDate = DateTime.Now,
+            Id = -1
+        };
+
+        VariableExpenses.Add(newItem);
+        StateHasChanged();
+    }
+
+    private void UpdateTotalExpensesBar()
+    {
+        var SummedExpenses = Math.Round(StaticExpenses.Select(x => x.Amount).Sum() + VariableExpenses.Select(x => x.Amount).Sum());
+        GrossRemaining = Math.Round(((SummedExpenses / Index.NickMonthlyIncome) * 100), 2) + "%";
+        DisplayGrossFraction = $"${Math.Round(SummedExpenses, 2)}/${Math.Round(Index.NickMonthlyIncome, 2)}";
+
+        StateHasChanged();
     }
 }
